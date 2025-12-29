@@ -1,6 +1,5 @@
 //👉 asyncHandler ek safety cover hai jo async controller ke errors ko Express tak safely pahucha deta hai.
 
-
 // asyncHandler is a function that takes another function as input
 // This function is the actual Express middleware
 // Express automatically passes req, res, and next
@@ -10,10 +9,8 @@
 // catch it and pass it to Express error middleware
 // Export asyncHandler so it can be used in routes/controllers
 
-
-const asyncHandler = (requestHandler) => (req, res, next) =>
-  Promise.resolve(requestHandler(req, res, next))
-
-    .catch(next);
-
+const asyncHandler = (requestHandler) => {
+  return (req, res, next) =>
+    Promise.resolve(requestHandler(req, res, next)).catch((err) => next(err));
+};
 export { asyncHandler };
