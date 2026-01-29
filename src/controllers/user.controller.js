@@ -243,6 +243,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const changeCurrentPassword = asyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
 
+  //console.log("Demo: ",req.body);
+
   const user = await User.findById(req.user?._id);
   const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
@@ -261,7 +263,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(200, req.user, "Current user feteched sucessfully");
+    .json(new ApiResponse(200, req.user, "Current user fetched successfully"));
 });
 
 const updatedAccountDetails = asyncHandler(async (req, res) => {
@@ -306,14 +308,15 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user.url, "Avatar image update sucessfully"));
 });
 
-const upadteUserCoverImage = asyncHandler(async (req, res) => {
+const updateUserCoverImage = asyncHandler(async (req, res) => {
   const coverImageLocalPath = req.file?.path;
 
   if (!coverImageLocalPath) {
     throw new ApiError(200, "Cover image file path is missing");
   }
 
-  const coverImage = uploadOnCloudinary(coverImageLocalPath);
+  const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+  //console.log("Demo:", coverImage);
 
   if (!coverImage.url) {
     throw new ApiError(400, "Error while uploading cover image");
@@ -336,6 +339,7 @@ const upadteUserCoverImage = asyncHandler(async (req, res) => {
 
 const getUserChannelProfile = asyncHandler(async (req, res) => {
   const { username } = req.params;
+  //console.log("Demo: ", req.params);
 
   if (!username?.trim()) {
     throw new ApiError(400, "Username not found");
@@ -400,7 +404,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, "User channel fetched sucessfully"));
+    .json(new ApiResponse(200, channel[0], "User channel fetched sucessfully"));
 });
 
 const getWatchHistory = asyncHandler(async (req, res) => {
@@ -465,8 +469,7 @@ export {
   getCurrentUser,
   updatedAccountDetails,
   updateUserAvatar,
-  upadteUserCoverImage,
-  upadteUserCoverImage,
+  updateUserCoverImage,
   getUserChannelProfile,
   getWatchHistory,
 };
